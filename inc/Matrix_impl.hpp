@@ -36,8 +36,6 @@ namespace algebra
             return;
         }
 
-        std::size_t it = 0; //serve?
-
         std::size_t minor_index = (SO==ROWS)?1:0;
         std::size_t major = (SO==ROWS)?r:c;
 
@@ -88,7 +86,7 @@ namespace algebra
 
         std::size_t i_elem = 0;
 
-        for(std::size_t i_major= 0; (i_major < major) && (i_elem<nonzero); ++i_major)
+        for(std::size_t i_major= 0; (i_major < major) && (i_elem<nonzero()); ++i_major)
         {
             std::size_t n_elem = ind_elem[i_major+1] - ind_elem[i_major];
             current_index[SO] = i_major;
@@ -109,6 +107,11 @@ namespace algebra
         return;
     };
 
+    /// @brief check if indeces are in range
+    /// @tparam T 
+    /// @tparam SO 
+    /// @param idx 
+    /// @return true if the indeces are valid, false oterwise
     template<typename T, STORAGE_ORDER SO>
     bool Matrix<T, SO>::index_in_range(const index_type & idx) const {
         if(idx[0]<r && idx[1]<c){
@@ -118,6 +121,10 @@ namespace algebra
         return false;
     }
 
+    /// @brief 
+    /// @tparam T 
+    /// @tparam SO 
+    /// @return number of nonzero elements
     template<typename T, STORAGE_ORDER SO>
     std::size_t Matrix<T,SO>::nonzero() const 
     {
@@ -137,11 +144,10 @@ namespace algebra
     const T Matrix<T, SO>::operator() (const index_type & idx) const 
     {
         
-        std::cout << "getter\n";
         // check out of range
         if(!index_in_range(idx))
         {
-            return T(0);
+            throw std::out_of_range("Indeces are out of range");
         }
         
         if(isCompressed)
@@ -201,7 +207,6 @@ namespace algebra
     template<typename T, STORAGE_ORDER SO>
     T& Matrix<T, SO>::operator() (const index_type & idx)
     {
-        std::cout << "setter\n";
         if (!index_in_range(idx))
         {
             throw std::out_of_range("Index out of range");
@@ -240,6 +245,9 @@ namespace algebra
         return (*this)({ir,ic});
     }
 
+    /// @brief print
+    /// @tparam T 
+    /// @tparam SO 
     template<typename T, STORAGE_ORDER SO>
     void Matrix<T, SO>::print() const {
         std::cout << "\n\nnumber of rows:    " << r << "\n";
@@ -251,6 +259,9 @@ namespace algebra
         std::cout << "major:             " << s2;
     };
 
+    /// @brief print all elements
+    /// @tparam T 
+    /// @tparam SO 
     template<typename T, STORAGE_ORDER SO>
     void Matrix<T, SO>::verbose_print() const {
 
