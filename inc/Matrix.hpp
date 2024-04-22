@@ -27,16 +27,19 @@ namespace algebra
         std::map<std::array<std::size_t, 2>, T, compareIndex<SO>> mmap; //dynamic matrix
         std::size_t c; // number of columns
         std::size_t r; // number of rows
-        std::size_t nonzero; // number of non-zero elements
-        bool isCompressed; // state: true if the matrix is compressed
+        bool isCompressed = false; // state: true if the matrix is compressed
         std::vector<std::size_t> ind_elem, ind_pos; // vectorS storing indexes for compressed format
         std::vector<T> mat_c; // compressed matrix
         
         bool index_in_range(const index_type & idx) const; // check if indexes are in range
+        std::size_t nonzero() const;
+
 
     public:
+        Matrix(std::size_t nr, std::size_t nc): r(nr), c(nc), isCompressed(false) {};
+
         Matrix(const std::map<std::array<std::size_t, 2>, T> & map, std::size_t nr, std::size_t nc): 
-        mmap(map.begin(), map.end()), r(nr), c(nc), isCompressed(false), nonzero(map.size()) 
+        mmap(map.begin(), map.end()), r(nr), c(nc), isCompressed(false) 
         {};
 
         bool is_compressed() const {return isCompressed;};

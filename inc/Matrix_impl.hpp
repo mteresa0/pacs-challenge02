@@ -42,8 +42,8 @@ namespace algebra
         std::size_t major = (SO==ROWS)?r:c;
 
         ind_elem.reserve(major+1);
-        ind_pos.reserve(nonzero);
-        mat_c.reserve(nonzero);
+        ind_pos.reserve(nonzero());
+        mat_c.reserve(nonzero());
 
         auto it1 = mmap.begin(); auto it0 = it1;
 
@@ -65,7 +65,7 @@ namespace algebra
                 major_ind++;
             }
         }
-        ind_elem.push_back(nonzero);
+        ind_elem.push_back(nonzero());
 
         mmap.clear();
 
@@ -116,6 +116,16 @@ namespace algebra
         }
 
         return false;
+    }
+
+    template<typename T, STORAGE_ORDER SO>
+    std::size_t Matrix<T,SO>::nonzero() const 
+    {
+        if (isCompressed)
+        {
+            return mat_c.size();
+        }
+        return mmap.size();
     }
     
     /// @brief call operator - getter
@@ -234,7 +244,7 @@ namespace algebra
     void Matrix<T, SO>::print() const {
         std::cout << "\n\nnumber of rows:    " << r << "\n";
         std::cout << "number of columns: " << c << "\n";
-        std::cout << "non-zero:          " << nonzero << "\n";
+        std::cout << "non-zero:          " << nonzero() << "\n";
         auto s1 = isCompressed?"compressed\n" : "uncompressed\n";
         std::cout << "state:             " << s1;
         auto s2 = (SO==ROWS)? "rows\n" : "columns\n";
@@ -248,12 +258,12 @@ namespace algebra
         if (isCompressed)
         {
             std::cout << "elem       ";
-            for (auto i = 0; i<nonzero; ++i)
+            for (auto i = 0; i<nonzero(); ++i)
                 std::cout << mat_c[i] << " ";
             std::cout << "\n";
 
             std::cout << "ind_minor  ";
-            for (auto i = 0; i<nonzero; ++i)
+            for (auto i = 0; i<nonzero(); ++i)
                 std::cout << ind_pos[i] << " ";
             std::cout << "\n";
 

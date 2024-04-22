@@ -1,4 +1,5 @@
 #include "Matrix_impl.hpp"
+#include "Operations.hpp"
 #include "Matrix.hpp"
 #include <map>
 #include <iostream>
@@ -14,6 +15,8 @@ int main() {
     map_mat[{3,2}] = 8;
 
     Matrix<double, algebra::COLS> m(map_mat, 4,4);
+
+    m(3,3) = 10000;
 
     m.verbose_print();
 
