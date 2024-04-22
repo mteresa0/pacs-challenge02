@@ -199,7 +199,20 @@ namespace algebra
 
         if(isCompressed)
         {
-            throw std::logic_error("The matrix is compressed");
+            std::size_t minor_index = (SO==ROWS) ? COLS : ROWS;
+            bool found = false;
+            for (std::size_t i = ind_elem[idx[SO]]; i<ind_elem[idx[SO]+1] && idx[minor_index]>=ind_pos[i]; ++i)
+            {
+                if (ind_pos[i]==idx[minor_index])
+                {
+                    found = true;
+                    return mat_c[i];
+                }
+            }
+
+            if (!found){
+                throw std::logic_error("cannot add element when the matrix is compressed");
+            }
         }
 
         return mmap[idx];
