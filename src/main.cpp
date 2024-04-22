@@ -13,22 +13,9 @@ int main() {
     map_mat[{1,1}] = 5;
     map_mat[{3,2}] = 8;
 
-    Matrix<double, algebra::ROWS> m(map_mat, 4,4);
+    Matrix<double, algebra::COLS> m(map_mat, 4,4);
 
-
-    std::cout << m(1,1) << "\n";
-
-    // auto s = (m.is_compressed())? "is compressed\n":"uncompressed\n";
-    // std::cout << s;
-
-    m({0,0}) = 108.6;
-
-    
-
-    m.compress();
-    m.print();
-
-    const auto t = m({0,1});
+    m.verbose_print();
 
     return 0;
 }

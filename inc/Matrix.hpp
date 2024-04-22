@@ -50,34 +50,8 @@ namespace algebra
         T& operator()(const index_type & idx);
         T& operator()(const std::size_t & ir, const std::size_t & ic);
 
-        void print() const {
-            std::cout << "\n\nnumber of rows:    " << r << "\n";
-            std::cout << "number of columns: " << c << "\n";
-            std::cout << "non-zero:          " << nonzero << "\n";
-            auto s1 = isCompressed?"compressed\n" : "uncompressed\n";
-            std::cout << "state:             " << s1;
-
-            if (isCompressed)
-            {
-                auto s = (SO==ROWS)? "rows\n" : "columns\n";
-                std::cout << "major:             " << s;
-                std::cout << "elem       ";
-                for (auto i = 0; i<nonzero; ++i)
-                    std::cout << mat_c[i] << " ";
-                std::cout << "\n";
-
-                std::cout << "ind_minor  ";
-                for (auto i = 0; i<nonzero; ++i)
-                    std::cout << ind_pos[i] << " ";
-                std::cout << "\n";
-
-                auto major = (SO==ROWS)?r:c;
-                std::cout << "ind_major  ";
-                for (auto i = 0; i<major+1; ++i)
-                    std::cout << ind_elem[i] << " ";
-                std::cout << "\n";
-            }
-        };
+        void print() const;
+        void verbose_print() const;
 
     }; // end Matrix class
 

@@ -230,6 +230,47 @@ namespace algebra
         return (*this)({ir,ic});
     }
 
+    template<typename T, STORAGE_ORDER SO>
+    void Matrix<T, SO>::print() const {
+        std::cout << "\n\nnumber of rows:    " << r << "\n";
+        std::cout << "number of columns: " << c << "\n";
+        std::cout << "non-zero:          " << nonzero << "\n";
+        auto s1 = isCompressed?"compressed\n" : "uncompressed\n";
+        std::cout << "state:             " << s1;
+        auto s2 = (SO==ROWS)? "rows\n" : "columns\n";
+        std::cout << "major:             " << s2;
+    };
+
+    template<typename T, STORAGE_ORDER SO>
+    void Matrix<T, SO>::verbose_print() const {
+
+        (*this).print();
+        if (isCompressed)
+        {
+            std::cout << "elem       ";
+            for (auto i = 0; i<nonzero; ++i)
+                std::cout << mat_c[i] << " ";
+            std::cout << "\n";
+
+            std::cout << "ind_minor  ";
+            for (auto i = 0; i<nonzero; ++i)
+                std::cout << ind_pos[i] << " ";
+            std::cout << "\n";
+
+            auto major = (SO==ROWS)?r:c;
+            std::cout << "ind_major  ";
+            for (auto i = 0; i<major+1; ++i)
+                std::cout << ind_elem[i] << " ";
+            std::cout << "\n";
+        } else {
+            for (auto it = mmap.cbegin(); it!=mmap.cend(); ++it)
+            {
+                std::cout << "[ " << it->first[0] << ", "<< it->first[1] << " ]  ->  " << it->second << "\n";
+            }
+        }
+    }
+
+
     ///// end class Matrix definitions
 
 } // end namespace algebra
