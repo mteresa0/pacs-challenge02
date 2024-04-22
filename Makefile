@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS += -std=c++20
-CPPFLAGS = -Wall -Wextra -Iinc -Iexternals/json/include
+CPPFLAGS = -Wall -Wextra -Iinc
 
 INC_DIR = inc
 SRC_DIR = src

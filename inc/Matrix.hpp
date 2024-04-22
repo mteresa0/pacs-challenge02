@@ -31,6 +31,8 @@ namespace algebra
         bool isCompressed; // state: true if the matrix is compressed
         std::vector<std::size_t> ind_elem, ind_pos; // vectorS storing indexes for compressed format
         std::vector<T> mat_c; // compressed matrix
+        
+        bool index_in_range(const index_type & idx) const; // check if indexes are in range
 
     public:
         Matrix(const std::map<std::array<std::size_t, 2>, T> & map, std::size_t nr, std::size_t nc): 
@@ -42,17 +44,23 @@ namespace algebra
         void compress();
         void uncompress();
 
+        const T operator() (const index_type & idx) const;
+        const T operator() (const std::size_t & ir, const std::size_t & ic) const;
+
+        T& operator()(const index_type & idx);
+        T& operator()(const std::size_t & ir, const std::size_t & ic);
+
         void print() const {
-            auto s1 = isCompressed?"compressed\n" : "uncompressed\n";
-            std::cout << "\nstate:             " << s1;
-            std::cout << "number of rows:    " << r << "\n";
+            std::cout << "\n\nnumber of rows:    " << r << "\n";
             std::cout << "number of columns: " << c << "\n";
             std::cout << "non-zero:          " << nonzero << "\n";
+            auto s1 = isCompressed?"compressed\n" : "uncompressed\n";
+            std::cout << "state:             " << s1;
 
             if (isCompressed)
             {
                 auto s = (SO==ROWS)? "rows\n" : "columns\n";
-                std::cout << "major: " << s;
+                std::cout << "major:             " << s;
                 std::cout << "elem       ";
                 for (auto i = 0; i<nonzero; ++i)
                     std::cout << mat_c[i] << " ";

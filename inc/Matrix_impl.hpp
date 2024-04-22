@@ -2,6 +2,7 @@
 #define MATRIX_IMPLEMENTATION
 
 #include "Matrix.hpp"
+#include <stdexcept>
 
 namespace algebra
 {
@@ -23,6 +24,9 @@ namespace algebra
 
     ///// class Matrix definitions
 
+    /// @brief compress sparse matrix
+    /// @tparam T 
+    /// @tparam SO 
     template<typename T, STORAGE_ORDER SO>
     void Matrix<T, SO>::compress()
     {
@@ -32,7 +36,7 @@ namespace algebra
             return;
         }
 
-        std::size_t it = 0;
+        std::size_t it = 0; //serve?
 
         std::size_t minor_index = (SO==ROWS)?1:0;
         std::size_t major = (SO==ROWS)?r:c;
@@ -71,6 +75,9 @@ namespace algebra
         return;
     };
 
+    /// @brief uncompress sparse matrix
+    /// @tparam T 
+    /// @tparam SO 
     template<typename T, STORAGE_ORDER SO>
     void Matrix<T, SO>::uncompress()
     {
@@ -101,6 +108,114 @@ namespace algebra
 
         return;
     };
+
+    template<typename T, STORAGE_ORDER SO>
+    bool Matrix<T, SO>::index_in_range(const index_type & idx) const {
+        if(idx[0]<r && idx[1]<c){
+            return true;
+        }
+
+        return false;
+    }
+    
+    /// @brief call operator - getter
+    /// @tparam T 
+    /// @tparam SO 
+    /// @param idx indices
+    /// @return element of the sparse matrix
+    template<typename T, STORAGE_ORDER SO>
+    const T Matrix<T, SO>::operator() (const index_type & idx) const 
+    {
+        
+        std::cout << "getter\n";
+        // check out of range
+        if(!index_in_range(idx))
+        {
+            return T(0);
+        }
+        
+        if(isCompressed)
+        {
+            std::size_t minor_index = (SO==ROWS)?COLS:ROWS;
+            for (std::size_t i = ind_elem[idx[SO]]; i<ind_elem[idx[SO]+1] && idx[minor_index]>=ind_pos[i]; ++i)
+            {
+                if(ind_pos[i]==idx[minor_index])
+                {
+                    return mat_c[i];
+                }
+            }
+
+            // if you arrived here it is because there is no match
+            return T(0);
+        }
+
+        // else (it is uncompressed)
+        std::size_t minor_index = (SO==ROWS)?COLS:ROWS;
+
+        // get bounds
+        index_type bound={0,0}; 
+        bound[SO] = idx[SO];
+        auto it_l = mmap.lower_bound(bound);
+        bound[SO] = idx[SO]+1;
+        auto it_u = mmap.lower_bound(bound);
+
+        bool id_passed = false;
+        for(auto it = it_l; it!=it_u && !id_passed; ++it)
+        {
+            if(idx[minor_index]==it->first[minor_index])
+                return it->second;
+            
+            if(it->first[minor_index]>idx[minor_index])
+                id_passed = true;
+        }
+
+        return T(0);
+    }
+
+    /// @brief call operator - getter
+    /// @tparam T 
+    /// @tparam SO 
+    /// @param ir row index
+    /// @param ic column index
+    /// @return element of the sparse matrix
+    template<typename T, STORAGE_ORDER SO>
+    const T Matrix<T,SO>::operator() (const std::size_t & ir, const std::size_t & ic) const {
+        return (*this)({ir,ic});
+    }
+
+    /// @brief call operator - setter
+    /// @tparam T 
+    /// @tparam SO 
+    /// @param idx indices
+    /// @return 
+    template<typename T, STORAGE_ORDER SO>
+    T& Matrix<T, SO>::operator() (const index_type & idx)
+    {
+        std::cout << "setter\n";
+        if (!index_in_range(idx))
+        {
+            throw std::out_of_range("Index out of range");
+        }
+
+        if(isCompressed)
+        {
+            throw std::logic_error("The matrix is compressed");
+        }
+
+        return mmap[idx];
+    }
+
+    /// @brief call operator - setter
+    /// @tparam T 
+    /// @tparam SO 
+    /// @param ir row index
+    /// @param ic column index
+    /// @return 
+    template<typename T, STORAGE_ORDER SO>
+    T& Matrix<T, SO>::operator() (const std::size_t & ir, const std::size_t & ic)
+    {
+        return (*this)({ir,ic});
+    }
 
     ///// end class Matrix definitions
 

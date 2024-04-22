@@ -13,21 +13,23 @@ int main() {
     map_mat[{1,1}] = 5;
     map_mat[{3,2}] = 8;
 
-    Matrix<double, algebra::ROWS> m(map_mat, 4,4);
+    const Matrix<double, algebra::ROWS> m(map_mat, 4,4);
 
-    m.compress();
+    auto a = m(1,2);
 
-    m.print();
+    // std::cout << m(1,1) << "\n";
 
-    m.uncompress();
+    // auto s = (m.is_compressed())? "is compressed\n":"uncompressed\n";
+    // std::cout << s;
 
-    m.print();
+    // m({0,0}) = 108.0;
 
-    m.compress();
+    
 
-    m.print();
+    // m.compress();
 
-
+    // std::cout << m({1,2}) << "\n";
+    // std::cout << m({0,0}) << "\n";
 
     return 0;
 }
