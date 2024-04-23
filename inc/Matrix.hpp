@@ -34,6 +34,14 @@ namespace algebra
         bool index_in_range(const index_type & idx) const; // check if indexes are in range
         std::size_t nonzero() const;
 
+        // std::vector<T> get_row(const std::size_t & i_c) const;
+        // std::vector<T> get_col(const std::size_t & i_r) const;
+        template <typename U, STORAGE_ORDER so>
+        friend const Matrix<U,so> operator*(const Matrix<U,so> &mat, const std::vector<U> & v);
+
+        template <typename U>
+        friend const Matrix<U,COLS> operator*(const Matrix<U,COLS> &mat, const std::vector<U> & v);
+
 
     public:
         Matrix(std::size_t nr, std::size_t nc): r(nr), c(nc), isCompressed(false) {};
