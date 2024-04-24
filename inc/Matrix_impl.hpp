@@ -297,5 +297,4 @@ namespace algebra
 } // end namespace algebra
 
 
-
 #endif // MATRIX_IMPLEMENTATION

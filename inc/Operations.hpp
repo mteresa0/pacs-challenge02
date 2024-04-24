@@ -76,14 +76,15 @@ namespace algebra {
             }
             return res;
         }
-
         
         for (auto & [idx, nnz] : mat.mmap)
         {
-            res({idx[0], 0}) += nnz*v[idx[1]];
+            if (res.mmap.count({idx[0],0})>0){
+                res({idx[0], 0}) += nnz*v[idx[1]];
+            } else {
+                res({idx[0], 0}) = nnz*v[idx[1]];
+            }
         }
-
-
 
         return res;
     };
