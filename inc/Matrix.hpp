@@ -40,7 +40,6 @@ namespace algebra
         template <typename U>
         friend const Matrix<U,COLS> operator*(const Matrix<U,COLS> &mat, const std::vector<U> & v);
 
-
     public:
         Matrix(std::size_t nr, std::size_t nc): r(nr), c(nc), isCompressed(false) {};
 
@@ -48,7 +47,7 @@ namespace algebra
         mmap(map.begin(), map.end()), r(nr), c(nc), isCompressed(false) 
         {};
 
-        void read_file(const std::string & filename);
+        void read_matrix_mmf(const std::string & filename);
 
         void resize(const index_type &);
         void resize(const std::size_t & i_r, const std::size_t & i_c);

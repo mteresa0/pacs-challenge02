@@ -89,9 +89,6 @@ namespace algebra {
         return res;
     };
 
-
-    // template<typename T, STORAGE_ORDER SO>
-
 } // end namespace algebra
 
-#endif // OPERATIONS
+#endif // OPERATIONS_INC

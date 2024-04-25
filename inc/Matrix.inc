@@ -25,26 +25,39 @@ namespace algebra
 
     ///// class Matrix definitions
 
+    /// @brief resize the dimensions of a matrix
+    /// @tparam T 
+    /// @tparam SO 
+    /// @param idx 
     template<typename T, STORAGE_ORDER SO>
     void Matrix<T, SO>::resize(const index_type & idx){
-        // if (idx[0]<r || idx[1]<c)
-        //     throw std::logic_error("size cannot decrease");
+        if (idx[0]<r || idx[1]<c)
+            throw std::logic_error("size cannot decrease");
 
         r = idx[0]; c = idx[1];
         return;
     };
 
+    /// @brief resize the dimensions of a matrix
+    /// @tparam T 
+    /// @tparam SO 
+    /// @param i_r 
+    /// @param i_c 
     template<typename T, STORAGE_ORDER SO>
     void Matrix<T, SO>::resize(const std::size_t & i_r, const std::size_t & i_c){
-        // if (idx[0]<r || idx[1]<c)
-        //     throw std::logic_error("size cannot decrease");
+        if (i_r<r || i_c<c)
+            throw std::logic_error("size cannot decrease");
 
         r = i_r; c = i_c;
         return;
     };
 
+    /// @brief read sparse matrix in matrix market format from a file
+    /// @tparam T 
+    /// @tparam SO 
+    /// @param filename 
     template<typename T, STORAGE_ORDER SO>
-    void Matrix<T,SO>::read_file(const std::string & filename){
+    void Matrix<T,SO>::read_matrix_mmf(const std::string & filename){
 
         std::ifstream file(filename);
         if (!file){
@@ -52,16 +65,17 @@ namespace algebra
             return;
         }
 
-        std::size_t nnz;
-        std::string header;
+        std::size_t r_, c_, nnz;
+        std::string first_line;
         std::size_t i_r, i_c;
         T value;
         
-        getline(file, header);        
-        file >> r >> c >> nnz;
+        getline(file, first_line);  // read first line (not useful)      
+        file >> r_ >> c_ >> nnz;    // read number of rows, columns and nonzero elements
+        resize(r_, c_);
         for(std::size_t i = 0; i<nnz; ++i){
             file >> i_r >> i_c >> value;
-            i_r -=1; i_c -=1;
+            i_r -=1; i_c -=1;   // subtract 1 beacuse the first element is not 0
             mmap[{i_r, i_c}] = value;
         }
 
