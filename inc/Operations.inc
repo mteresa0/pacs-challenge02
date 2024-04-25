@@ -1,5 +1,5 @@
-#ifndef OPERATIONS
-#define OPERATIONS
+#ifndef OPERATIONS_INC
+#define OPERATIONS_INC
 
 #include "Matrix.hpp"
 

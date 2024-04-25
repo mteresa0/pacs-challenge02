@@ -1,5 +1,5 @@
-#ifndef MATRIX_IMPLEMENTATION
-#define MATRIX_IMPLEMENTATION
+#ifndef MATRIX_INC
+#define MATRIX_INC
 
 #include "Matrix.hpp"
 #include <stdexcept>
@@ -342,4 +342,4 @@ namespace algebra
 } // end namespace algebra
 
 
-#endif // MATRIX_IMPLEMENTATION
+#endif // MATRIX_INC

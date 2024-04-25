@@ -1,5 +1,5 @@
-#ifndef MATRIX
-#define MATRIX
+#ifndef MATRIX_HPP
+#define MATRIX_HPP
 
 #include <map>
 #include <vector>
@@ -74,4 +74,7 @@ namespace algebra
 
 } // end namespace algebra
 
-#endif // MATRIX
+#include "Matrix.inc"
+#include "Operations.inc"
+
+#endif // MATRIX_HPP

@@ -6,11 +6,10 @@ PACS_INC_DIR = $(PACS_ROOT)/include
 INCLUDE = -I$(INC_DIR) -I$(PACS_INC_DIR)
 
 CXX = g++
-CXXFLAGS += -std=c++20 -O3
+CXXFLAGS += -std=c++20
 CPPFLAGS = -Wall -Wextra $(INCLUDE) 
 
 SRCS = $(wildcard $(SRC_DIR)/*.cpp)
-HDRS = $(wildcard $(INC_DIR)/*.hpp)
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
 EXEC = main
 
@@ -25,7 +24,8 @@ main: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OBJS) -o main
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
+	mkdir $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -O3 $(INCLUDE) -c $< -o $@
 
 boh : $(SRCS)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o main $^
@@ -34,4 +34,4 @@ boh : $(SRCS)
 
 clean : 
 	rm -f main
-	rm -f $(OBJS)
+	rm -r -f $(OBJ_DIR)

@@ -1,7 +1,5 @@
 
 
-#include "Matrix_impl.hpp"
-#include "Operations.hpp"
 #include "Matrix.hpp"
 #include "chrono.hpp"
 #include <map>
@@ -21,9 +19,9 @@ int main() {
     m_row.read_file(filename);
     m_col.read_file(filename);
 
-    m_row.print();
+    // m_row.verbose_print();
 
-    std::size_t n_it = 100000;
+    std::size_t n_it = 1000;
 
     std::cout << "  ROWS  \n";
 
@@ -34,6 +32,8 @@ int main() {
     clock.stop();
     std::cout << "compress matrix: \n";
     std::cout << clock << "\n";
+
+    // m_row.verbose_print();
 
     //// uncompress matrix
     m_row.uncompress();
@@ -101,9 +101,6 @@ int main() {
     clock.stop();
     std::cout << "uncompress SMV multiplication: \n";
     std::cout << clock << "\n";
-
-    
-
 
     return 0;
 }
