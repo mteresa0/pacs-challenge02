@@ -12,53 +12,97 @@ using namespace algebra;
 int main() {
 
     Timings::Chrono clock;
+    
+    Matrix<double, algebra::ROWS> m_row(0,0);
+    Matrix<double, algebra::ROWS> m_col(0,0);
 
-    std::map<std::array<std::size_t, 2>, double> map_mat;
-    map_mat[{1,1}] = 2;
-    map_mat[{0,0}] = 1;
-    map_mat[{2,2}] = 3;
-    map_mat[{3,3}] = 4;
+    std::string filename = "lnsp_131.mtx";
 
-    map_mat[{1,0}] += 29;
+    m_row.read_file(filename);
+    m_col.read_file(filename);
 
-    Matrix<double, algebra::ROWS> m(map_mat, 5,8);
+    m_row.print();
+
+    std::size_t n_it = 100000;
+
+    std::cout << "  ROWS  \n";
 
     //// compress matrix
-    m.compress(); m.uncompress();
+    m_row.compress(); m_row.uncompress();
     clock.start();
-    m.compress();
+    m_row.compress();
     clock.stop();
     std::cout << "compress matrix: \n";
     std::cout << clock << "\n";
 
     //// uncompress matrix
-    m.uncompress();
-    m.compress();
+    m_row.uncompress();
+    m_row.compress();
     clock.start();
-    m.uncompress();
+    m_row.uncompress();
     clock.stop();
     std::cout << "uncompress matrix: \n";
     std::cout << clock << "\n";
 
-    m.compress();
+    m_row.compress();
 
     //// multiplications
-    std::vector<double> vec = {1,2,3,4,5};
-    auto res = m*vec; res = m*vec;
+    std::vector<double> vec(m_row.get_cols(),1);
+    auto res_row = m_row*vec;
     clock.start();
-    res = m*vec;
+    for (auto i =0; i<n_it; ++i)
+        res_row = m_row*vec;
     clock.stop();
     std::cout << "compress SMV multiplication: \n";
     std::cout << clock << "\n";
 
-    m.uncompress();
-    res = m*vec; res = m*vec;
+    m_row.uncompress();
     clock.start();
-    res = m*vec;
+    for (auto i =0; i<n_it; ++i)
+        res_row = m_row*vec;
     clock.stop();
     std::cout << "uncompress SMV multiplication: \n";
     std::cout << clock << "\n";
-    // res.compress();
+
+    std::cout << "  COLS  \n";
+
+    //// compress matrix
+    m_col.compress(); m_col.uncompress();
+    clock.start();
+    m_col.compress();
+    clock.stop();
+    std::cout << "compress matrix: \n";
+    std::cout << clock << "\n";
+
+    //// uncompress matrix
+    m_col.uncompress();
+    m_col.compress();
+    clock.start();
+    m_col.uncompress();
+    clock.stop();
+    std::cout << "uncompress matrix: \n";
+    std::cout << clock << "\n";
+
+    m_col.compress();
+
+    //// multiplications
+    // std::vector<double> vec(m_col.get_cols(),1);
+    auto res_col = m_col*vec;
+    for (auto i =0; i<n_it; ++i)
+        res_col = m_col*vec;
+    clock.stop();
+    std::cout << "compress SMV multiplication: \n";
+    std::cout << clock << "\n";
+
+    m_col.uncompress();
+    clock.start();
+    for (auto i =0; i<n_it; ++i)
+        res_col = m_col*vec;
+    clock.stop();
+    std::cout << "uncompress SMV multiplication: \n";
+    std::cout << clock << "\n";
+
+    
 
 
     return 0;

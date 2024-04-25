@@ -6,8 +6,8 @@ PACS_INC_DIR = $(PACS_ROOT)/include
 INCLUDE = -I$(INC_DIR) -I$(PACS_INC_DIR)
 
 CXX = g++
-CXXFLAGS += -std=c++20
-CPPFLAGS = -Wall -Wextra $(INCLUDE)
+CXXFLAGS += -std=c++20 -O3
+CPPFLAGS = -Wall -Wextra $(INCLUDE) 
 
 SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 HDRS = $(wildcard $(INC_DIR)/*.hpp)

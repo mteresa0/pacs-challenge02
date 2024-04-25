@@ -34,8 +34,6 @@ namespace algebra
         bool index_in_range(const index_type & idx) const; // check if indexes are in range
         std::size_t nonzero() const;
 
-        // std::vector<T> get_row(const std::size_t & i_c) const;
-        // std::vector<T> get_col(const std::size_t & i_r) const;
         template <typename U, STORAGE_ORDER so>
         friend const Matrix<U,so> operator*(const Matrix<U,so> &mat, const std::vector<U> & v);
 
@@ -50,6 +48,11 @@ namespace algebra
         mmap(map.begin(), map.end()), r(nr), c(nc), isCompressed(false) 
         {};
 
+        void read_file(const std::string & filename);
+
+        void resize(const index_type &);
+        void resize(const std::size_t & i_r, const std::size_t & i_c);
+
         bool is_compressed() const {return isCompressed;};
         
         void compress();
@@ -63,6 +66,9 @@ namespace algebra
 
         void print() const;
         void verbose_print() const;
+
+        std::size_t get_rows() {return r;};
+        std::size_t get_cols() {return c;};
 
     }; // end Matrix class
 

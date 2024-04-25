@@ -3,6 +3,7 @@
 
 #include "Matrix.hpp"
 #include <stdexcept>
+#include <fstream>
 
 namespace algebra
 {
@@ -23,6 +24,50 @@ namespace algebra
     };
 
     ///// class Matrix definitions
+
+    template<typename T, STORAGE_ORDER SO>
+    void Matrix<T, SO>::resize(const index_type & idx){
+        // if (idx[0]<r || idx[1]<c)
+        //     throw std::logic_error("size cannot decrease");
+
+        r = idx[0]; c = idx[1];
+        return;
+    };
+
+    template<typename T, STORAGE_ORDER SO>
+    void Matrix<T, SO>::resize(const std::size_t & i_r, const std::size_t & i_c){
+        // if (idx[0]<r || idx[1]<c)
+        //     throw std::logic_error("size cannot decrease");
+
+        r = i_r; c = i_c;
+        return;
+    };
+
+    template<typename T, STORAGE_ORDER SO>
+    void Matrix<T,SO>::read_file(const std::string & filename){
+
+        std::ifstream file(filename);
+        if (!file){
+            std::cerr << "file not found\n";
+            return;
+        }
+
+        std::size_t nnz;
+        std::string header;
+        std::size_t i_r, i_c;
+        T value;
+        
+        getline(file, header);        
+        file >> r >> c >> nnz;
+        for(std::size_t i = 0; i<nnz; ++i){
+            file >> i_r >> i_c >> value;
+            i_r -=1; i_c -=1;
+            mmap[{i_r, i_c}] = value;
+        }
+
+        file.close();
+        return;
+    }
 
     /// @brief compress sparse matrix
     /// @tparam T 
