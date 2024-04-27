@@ -53,7 +53,7 @@ namespace algebra {
     template<typename T, STORAGE_ORDER so>
     void TestPerformance<T, so>::test_SMV_multiplication()
     {
-        std::vector<T> vec(matrix.get_rows(), 1);
+        std::vector<T> vec(matrix.get_cols(), 1);
 
         clock.start();
         auto res1 = matrix*vec;
