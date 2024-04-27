@@ -8,11 +8,11 @@ namespace algebra {
     template<typename T, STORAGE_ORDER SO>
     const Matrix<T, SO> operator*(const Matrix<T, SO> & mat, const std::vector<T> & v)
     {
-        if (mat.r!=v.size()){
+        if (mat.c!=v.size()){
             throw std::logic_error("sizes do not match!");
         }
 
-        Matrix<T, ROWS> res(mat.c, 1);
+        Matrix<T, ROWS> res(mat.r, 1);
 
         if (mat.is_compressed())
         {      
@@ -32,22 +32,17 @@ namespace algebra {
             return res;
         }
 
-        index_type upper_bound = {1,0};
-        auto it = mat.mmap.begin();
-        auto it_u = mat.mmap.begin(); // initialization
-
-        T sum = 0;
+        std::vector<T> vec_res(mat.c, 0);
+        for (auto it = mat.mmap.cbegin(); it!=mat.mmap.cend(); ++it)//(auto & [idx, nnz] : mat.mmap)
+        {
+            index_type idx = it->first;
+            T value = it->second;
+            vec_res[idx[0]] += value*v[idx[1]];
+        }
         for (std::size_t i = 0; i<mat.r; ++i)
         {
-            upper_bound[0] = i+1;
-            it_u = mat.mmap.lower_bound(upper_bound);
-            for (it = it; it!=it_u; ++it)
-            {
-                sum += it->second * v[it->first[1]];
-            }
-            if (sum!=0){
-                res.mmap[{i,0}] = sum;
-                sum = 0;
+            if(vec_res[i]!=0) {
+                res.mmap[{i,0}] = vec_res[i];
             }
         }
 
@@ -58,31 +53,44 @@ namespace algebra {
     template<typename T>
     const Matrix<T,COLS> operator*(const Matrix<T, COLS> & mat, const std::vector<T> & v)
     {
-        if (mat.r!=v.size()){
+        if (mat.c!=v.size()){
             throw std::logic_error("sizes do not match!");
         }
 
-        Matrix<T, COLS> res(mat.c, 1);
+        Matrix<T, COLS> res(mat.r, 1);
 
         if (mat.is_compressed()){
             
             std::size_t j = 0;
 
+            std::vector<T> vec_res(mat.r, 0);
             for (std::size_t i = 0; i < mat.c; ++i){
-                for (j=j; j<mat.ind_elem[i+1]; ++j){
+                while (j<mat.ind_elem[i+1]){
                     std::size_t i_r = mat.ind_pos[j];
-                    res.mmap[{i_r,0}] += mat(i_r,i) * v[i];
+                    vec_res[i_r] += mat({i_r, i})*v[i];
+                    ++j;
+                }
+            }
+            for (std::size_t k = 0; k<mat.r; ++k)
+            {
+                if(vec_res[k]!=0) {
+                    res.mmap[{k,0}] = vec_res[k];
                 }
             }
             return res;
         }
-        
-        for (auto & [idx, nnz] : mat.mmap)
+
+        std::vector<T> vec_res(mat.r, 0);
+        for (auto it = mat.mmap.cbegin(); it!=mat.mmap.cend(); ++it)//(auto & [idx, nnz] : mat.mmap)
         {
-            if (res.mmap.count({idx[0],0})>0){
-                res({idx[0], 0}) += nnz*v[idx[1]];
-            } else {
-                res({idx[0], 0}) = nnz*v[idx[1]];
+            index_type idx = it->first;
+            T value = it->second;
+            vec_res[idx[0]] += value*v[idx[1]];
+        }
+        for (std::size_t i = 0; i<mat.r; ++i)
+        {
+            if(vec_res[i]!=0) {
+                res.mmap[{i,0}] = vec_res[i];
             }
         }
 
