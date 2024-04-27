@@ -138,7 +138,7 @@ namespace algebra
     template<typename T, STORAGE_ORDER SO>
     void Matrix<T, SO>::uncompress()
     {
-        constexpr std::size_t minor_index = (SO == ROWS) ? 1 : 0;
+        std::size_t minor_index = (SO == ROWS) ? 1 : 0;
         index_type current_index = {0,0};
 
         std::size_t major = (SO == ROWS) ? r : c;

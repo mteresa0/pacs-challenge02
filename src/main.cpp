@@ -1,5 +1,6 @@
 
 #include "Matrix.hpp"
+#include "TestPerformance.hpp"
 #include "chrono.hpp"
 #include <map>
 #include <iostream>
@@ -18,30 +19,15 @@ int main() {
     m_row.read_matrix_mmf(filename);
     m_col.read_matrix_mmf(filename);
 
-
-    std::size_t n_it = 1;
-
-    std::cout << "ROWS\n";
-
-    //// compress matrix
-    m_row.compress(); m_row.uncompress();
-    clock.start();
-    m_row.compress();
-    clock.stop();
-    std::cout << "compress matrix: \n";
-    std::cout << clock << "\n";
-
-    //// uncompress matrix
-    m_row.uncompress();
-    m_row.compress();
-    clock.start();
-    m_row.uncompress();
-    clock.stop();
-    std::cout << "uncompress matrix: \n";
-    std::cout << clock << "\n";
-
-    m_row.compress();
-
+    TestPerformance<double, ROWS> test_perf_csr(m_row);
+    TestPerformance<double, COLS> test_perf_csc(m_col);
+    
+    test_perf_csr.test_compress();
+    test_perf_csc.test_compress();
+    test_perf_csr.test_uncompress();
+    test_perf_csc.test_uncompress();
+    test_perf_csr.test_SMV_multiplication();
+    test_perf_csc.test_SMV_multiplication();
 
     return 0;
 }

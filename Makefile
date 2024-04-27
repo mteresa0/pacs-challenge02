@@ -24,11 +24,8 @@ main: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OBJS) -o main
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
-	mkdir $(OBJ_DIR)
+	mkdir -p $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -O3 $(INCLUDE) -c $< -o $@
-
-boh : $(SRCS)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o main $^
 
 .PHONY : all clean
 
