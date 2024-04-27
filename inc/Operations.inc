@@ -2,6 +2,7 @@
 #define OPERATIONS_INC
 
 #include "Matrix.hpp"
+#include <complex>
 
 namespace algebra {
 
@@ -24,7 +25,7 @@ namespace algebra {
                 {
                     sum += mat({i,mat.ind_pos[j]}) * v[mat.ind_pos[j]];
                 }
-                if (sum!=0){
+                if (!is_zero(sum)){
                     res.mmap[{i, 0}] = sum;
                     sum = 0;
                 }
@@ -41,7 +42,7 @@ namespace algebra {
         }
         for (std::size_t i = 0; i<mat.r; ++i)
         {
-            if(vec_res[i]!=0) {
+            if(!is_zero(vec_res[i])) {
                 res.mmap[{i,0}] = vec_res[i];
             }
         }
@@ -73,7 +74,7 @@ namespace algebra {
             }
             for (std::size_t k = 0; k<mat.r; ++k)
             {
-                if(vec_res[k]!=0) {
+                if(!is_zero(vec_res[k])) {
                     res.mmap[{k,0}] = vec_res[k];
                 }
             }
@@ -89,7 +90,7 @@ namespace algebra {
         }
         for (std::size_t i = 0; i<mat.r; ++i)
         {
-            if(vec_res[i]!=0) {
+            if(!is_zero(vec_res[i])) {
                 res.mmap[{i,0}] = vec_res[i];
             }
         }

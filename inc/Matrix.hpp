@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include <iostream>
+#include <complex>
 
 namespace algebra
 {
@@ -71,6 +72,12 @@ namespace algebra
 
     }; // end Matrix class
 
+    template<typename T>
+    inline const bool is_zero(const T & value) {return value == 0;};
+
+    template<typename U>
+    inline const bool is_zero(const std::complex<U> & value) {return value == std::complex<U>(0,0);};
+    
 } // end namespace algebra
 
 #include "Matrix.inc"
