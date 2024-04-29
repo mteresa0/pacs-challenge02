@@ -14,7 +14,7 @@ namespace algebra
     /// @param rhs 
     /// @return 
     template <STORAGE_ORDER so>
-    bool compareIndex<so>::operator() (const index_type & lhs, const index_type & rhs) const
+    bool compareIndex<so>::operator() (const index_type & lhs, const index_type & rhs) const noexcept
     {
         if constexpr(so == ROWS)
         {

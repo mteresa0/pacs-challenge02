@@ -18,7 +18,7 @@ namespace algebra
     template<STORAGE_ORDER so>
     struct compareIndex
     {
-        bool operator() (const index_type & lhs, const index_type & rhs) const;
+        bool operator() (const index_type & lhs, const index_type & rhs) const noexcept;
     };
 
     template<typename T, STORAGE_ORDER SO = ROWS> 
@@ -35,13 +35,8 @@ namespace algebra
         bool index_in_range(const index_type & idx) const; // check if indexes are in range
         std::size_t nonzero() const;
 
-        template <typename U, STORAGE_ORDER so>
-        friend const Matrix<U,so> operator*(const Matrix<U,so> &mat, const std::vector<U> & v);
-
-        template <typename U>
-        friend const Matrix<U,COLS> operator*(const Matrix<U,COLS> &mat, const std::vector<U> & v);
-
     public:
+        Matrix() = default;
         Matrix(std::size_t nr, std::size_t nc): r(nr), c(nc), isCompressed(false) {};
 
         Matrix(const std::map<std::array<std::size_t, 2>, T> & map, std::size_t nr, std::size_t nc): 
@@ -67,8 +62,14 @@ namespace algebra
         void print() const;
         void verbose_print() const;
 
-        std::size_t get_rows() {return r;};
-        std::size_t get_cols() {return c;};
+        std::size_t get_rows() const {return r;};
+        std::size_t get_cols() const {return c;};
+
+        template <typename U, STORAGE_ORDER so>
+        friend const Matrix<U,so> operator*(const Matrix<U,so> &mat, const std::vector<U> & v);
+
+        template <typename U>
+        friend const Matrix<U,COLS> operator*(const Matrix<U,COLS> &mat, const std::vector<U> & v);
 
     }; // end Matrix class
 
