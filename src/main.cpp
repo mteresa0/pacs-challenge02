@@ -12,13 +12,14 @@ int main() {
 
     Timings::Chrono clock;
 
-    using type=std::complex<double>;
-    // using type=double;
+    // using type=std::complex<double>;
+    using type=double;
     
     Matrix<type, algebra::ROWS> m_row(0,0);
     Matrix<type, algebra::COLS> m_col(0,0);
 
-    std::string filename = "lnsp_131.mtx";
+    // std::string filename = "lnsp_131.mtx";
+    std::string filename = "nnc666.mtx";
 
     m_row.read_matrix_mmf(filename);
     m_col.read_matrix_mmf(filename);

@@ -138,18 +138,19 @@ namespace algebra
     template<typename T, STORAGE_ORDER SO>
     void Matrix<T, SO>::uncompress()
     {
-        std::size_t minor_index = (SO == ROWS) ? 1 : 0;
+        std::size_t minor_index = (SO == ROWS) ? COLS : ROWS;
         index_type current_index = {0,0};
 
         std::size_t major = (SO == ROWS) ? r : c;
-
         std::size_t i_elem = 0;
+
+        std::size_t n_elem_loc;
 
         for(std::size_t i_major= 0; (i_major < major) && (i_elem<nonzero()); ++i_major)
         {
-            std::size_t n_elem = ind_elem[i_major+1] - ind_elem[i_major];
+            n_elem_loc = ind_elem[i_major+1] - ind_elem[i_major];
             current_index[SO] = i_major;
-            for (std::size_t i = 0; i<n_elem; ++i)
+            for (std::size_t i = 0; i<n_elem_loc; ++i)
             {
                 current_index[minor_index] = ind_pos[i_elem];
                 mmap[current_index] = mat_c[i_elem];
