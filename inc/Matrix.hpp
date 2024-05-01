@@ -78,6 +78,12 @@ namespace algebra
 
     template<typename U>
     inline const bool is_zero(const std::complex<U> & value) {return value == std::complex<U>(0,0);};
+
+    template<typename T>
+    inline void put_zero(T & value) {value = 0; return;};
+
+    template<typename U>
+    inline void put_zero(std::complex<U> & value) {value = std::complex<U>(0,0); return;};
     
 } // end namespace algebra
 

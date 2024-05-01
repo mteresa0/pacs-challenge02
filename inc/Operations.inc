@@ -27,7 +27,7 @@ namespace algebra {
                 }
                 if (!is_zero(sum)){
                     res.mmap[{i, 0}] = sum;
-                    sum = 0;
+                    put_zero(sum);
                 }
             }
             return res;
