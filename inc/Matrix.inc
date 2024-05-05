@@ -25,6 +25,35 @@ namespace algebra
 
     ///// class Matrix definitions
 
+    template<typename T, STORAGE_ORDER SO>
+    Matrix<T,SO>::Matrix(const Matrix<T,Matrix<T,SO>::minor_index> &mat): 
+    Matrix(mat.get_rows(), mat.get_cols())
+    {
+
+        if (mat.is_compressed()) {
+            std::vector<std::size_t> v_minor_ind(std::move(mat.get_minor_index_vector()));
+            std::vector<std::size_t> v_major_ind(std::move(mat.get_major_index_vector()));
+            std::vector<T> v_values(std::move(mat.get_compressed_matrix()));
+            index_type size({mat.get_rows(), mat.get_cols()});
+            std::size_t j = 0;
+            index_type current_index = {0,0};
+            for(std::size_t i = 0; i<size[minor_index]; ++i){
+                current_index[minor_index] = i;
+                while(j<v_major_ind[i+1] && j<v_values.size()){
+                    current_index[SO] = v_minor_ind[j];
+                    mmap[current_index] = v_values[j];
+                    ++j;
+                }
+            }
+        } else {
+            for(auto it = mat.cbegin(); it!=mat.cend(); ++it)
+            {
+                mmap[it->first] = it->second;
+            }
+        }
+            
+    };
+
     /// @brief resize the dimensions of a matrix
     /// @tparam T 
     /// @tparam SO 
@@ -51,6 +80,27 @@ namespace algebra
         r = i_r; c = i_c;
         return;
     };
+
+    
+    template<typename T, STORAGE_ORDER SO>
+    Matrix<T,SO>::map_type::const_iterator Matrix<T, SO>::cbegin() const
+    {
+        if(isCompressed){
+            throw std::logic_error("the matrix is compressed\n");
+        }
+        
+        return mmap.cbegin();
+    }
+
+    template<typename T, STORAGE_ORDER SO>
+    Matrix<T,SO>::map_type::const_iterator Matrix<T, SO>::cend() const
+    {
+        if(isCompressed){
+            throw std::logic_error("the matrix is compressed\n");
+        }
+        
+        return mmap.cend();
+    }
 
     /// @brief read sparse matrix in matrix market format from a file
     /// @tparam T 

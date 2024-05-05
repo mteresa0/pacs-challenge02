@@ -23,9 +23,10 @@ namespace algebra
 
     template<typename T, STORAGE_ORDER SO = ROWS> 
     class Matrix {
+        using map_type = std::map<std::array<std::size_t, 2>, T, compareIndex<SO>>;
 
     private:
-        std::map<std::array<std::size_t, 2>, T, compareIndex<SO>> mmap; //dynamic matrix
+        map_type mmap; //dynamic matrix
         std::size_t c; // number of columns
         std::size_t r; // number of rows
         bool isCompressed = false; // state: true if the matrix is compressed
@@ -35,15 +36,26 @@ namespace algebra
         bool index_in_range(const index_type & idx) const; // check if indexes are in range
         std::size_t nonzero() const;
 
-        static constexpr std::size_t minor_index = (SO==ROWS) ? COLS : ROWS;
+        static constexpr STORAGE_ORDER minor_index = (SO==ROWS) ? COLS : ROWS;
 
     public:
-        Matrix() = default;
-        Matrix(std::size_t nr, std::size_t nc): r(nr), c(nc), isCompressed(false) {};
+        explicit Matrix(std::size_t nr=0, std::size_t nc=0): r(nr), c(nc), isCompressed(false) {};
 
         Matrix(const std::map<std::array<std::size_t, 2>, T> & map, std::size_t nr, std::size_t nc): 
-        mmap(map.begin(), map.end()), r(nr), c(nc), isCompressed(false) 
-        {};
+        mmap(map.begin(), map.end()), r(nr), c(nc), isCompressed(false) {};
+
+        Matrix(const std::string & filename): Matrix() {read_matrix_mmf(filename);};
+
+        Matrix(const Matrix &) = default;
+        Matrix(const Matrix<T,minor_index> &);
+        Matrix(Matrix &&) = default;
+        
+        map_type::const_iterator cbegin() const;
+        map_type::const_iterator cend() const;
+
+        std::vector<T> get_compressed_matrix() const {return mat_c;};
+        std::vector<std::size_t> get_minor_index_vector() const {return ind_pos;};
+        std::vector<std::size_t> get_major_index_vector() const {return ind_elem;};
 
         void read_matrix_mmf(const std::string & filename);
 
