@@ -95,7 +95,6 @@ namespace algebra
             return;
         }
 
-        std::size_t minor_index = (SO==ROWS)?1:0;
         std::size_t major = (SO==ROWS)?r:c;
 
         ind_elem.reserve(major+1);
@@ -138,7 +137,6 @@ namespace algebra
     template<typename T, STORAGE_ORDER SO>
     void Matrix<T, SO>::uncompress()
     {
-        std::size_t minor_index = (SO == ROWS) ? COLS : ROWS;
         index_type current_index = {0,0};
 
         std::size_t major = (SO == ROWS) ? r : c;
@@ -212,7 +210,6 @@ namespace algebra
         
         if(isCompressed)
         {
-            std::size_t minor_index = (SO==ROWS)?COLS:ROWS;
             for (std::size_t i = ind_elem[idx[SO]]; i<ind_elem[idx[SO]+1] && idx[minor_index]>=ind_pos[i]; ++i)
             {
                 if(ind_pos[i]==idx[minor_index])
@@ -226,7 +223,6 @@ namespace algebra
         }
 
         // else (it is uncompressed)
-        std::size_t minor_index = (SO==ROWS)?COLS:ROWS;
 
         // get bounds
         index_type bound={0,0}; 
@@ -274,7 +270,6 @@ namespace algebra
 
         if(isCompressed)
         {
-            std::size_t minor_index = (SO==ROWS) ? COLS : ROWS;
             bool found = false;
             for (std::size_t i = ind_elem[idx[SO]]; i<ind_elem[idx[SO]+1] && idx[minor_index]>=ind_pos[i]; ++i)
             {

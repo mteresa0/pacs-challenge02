@@ -9,8 +9,8 @@
 namespace algebra
 {
     enum STORAGE_ORDER {
-        ROWS = 0,
-        COLS = 1
+        ROWS = std::size_t(0),
+        COLS = std::size_t(1)
     };
 
     using index_type = std::array<std::size_t, 2>;
@@ -34,6 +34,8 @@ namespace algebra
         
         bool index_in_range(const index_type & idx) const; // check if indexes are in range
         std::size_t nonzero() const;
+
+        static constexpr std::size_t minor_index = (SO==ROWS) ? COLS : ROWS;
 
     public:
         Matrix() = default;
