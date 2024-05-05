@@ -9,17 +9,13 @@
 using namespace algebra;
 
 int main() {
-
-    Timings::Chrono clock;
-
+    /// choose type
     // using type=std::complex<double>;
     using type=double;
 
+    /// choose filename
     std::string filename = "data/lnsp_131.mtx";
     // std::string filename = "data/nnc666.mtx";
-
-    Matrix<type, ROWS> M_rows(filename);
-    Matrix<type, COLS> M_cols(M_rows);
 
     TestPerformance<type, ROWS> benchmark_csr(filename);
     TestPerformance<type, COLS> benchmark_csc(filename);
