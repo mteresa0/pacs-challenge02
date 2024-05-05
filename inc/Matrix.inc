@@ -36,8 +36,8 @@ namespace algebra
     {
 
         if (mat.is_compressed()) {
-            std::vector<std::size_t> v_minor_ind(std::move(mat.get_minor_index_vector()));
-            std::vector<std::size_t> v_major_ind(std::move(mat.get_major_index_vector()));
+            std::vector<std::size_t> v_minor_ind(std::move(mat.get_minor_vector()));
+            std::vector<std::size_t> v_major_ind(std::move(mat.get_major_vector()));
             std::vector<T> v_values(std::move(mat.get_compressed_matrix()));
             index_type size({mat.get_rows(), mat.get_cols()});
             std::size_t j = 0;
@@ -46,14 +46,14 @@ namespace algebra
                 current_index[minor_index] = i;
                 while(j<v_major_ind[i+1] && j<v_values.size()){
                     current_index[SO] = v_minor_ind[j];
-                    mmap[current_index] = v_values[j];
+                    dyn_mat[current_index] = v_values[j];
                     ++j;
                 }
             }
         } else {
             for(auto it = mat.cbegin(); it!=mat.cend(); ++it)
             {
-                mmap[it->first] = it->second;
+                dyn_mat[it->first] = it->second;
             }
         }
             
@@ -89,7 +89,7 @@ namespace algebra
     /// @brief get the first element as constant iterator of the dynamic matrix
     /// @tparam T value type
     /// @tparam SO storage order 
-    /// @return mmap.cbegin()
+    /// @return dyn_mat.cbegin()
     template<typename T, STORAGE_ORDER SO>
     Matrix<T,SO>::map_type::const_iterator Matrix<T, SO>::cbegin() const
     {
@@ -97,13 +97,13 @@ namespace algebra
             throw std::logic_error("the matrix is compressed\n");
         }
         
-        return mmap.cbegin();
+        return dyn_mat.cbegin();
     }
 
     /// @brief get the end as constant iterator of the dynamic matrix
     /// @tparam T value type
     /// @tparam SO storage order 
-    /// @return mmap.cend()
+    /// @return dyn_mat.cend()
     template<typename T, STORAGE_ORDER SO>
     Matrix<T,SO>::map_type::const_iterator Matrix<T, SO>::cend() const
     {
@@ -111,7 +111,7 @@ namespace algebra
             throw std::logic_error("the matrix is compressed\n");
         }
         
-        return mmap.cend();
+        return dyn_mat.cend();
     }
 
     /// @brief read sparse matrix in matrix market format from a file
@@ -138,7 +138,7 @@ namespace algebra
         for(std::size_t i = 0; i<nnz; ++i){
             file >> i_r >> i_c >> value;
             i_r -=1; i_c -=1;   // subtract 1 beacuse the first element is not 0
-            mmap[{i_r, i_c}] = value;
+            dyn_mat[{i_r, i_c}] = value;
         }
 
         file.close();
@@ -159,11 +159,11 @@ namespace algebra
 
         std::size_t major = (SO==ROWS)?r:c;
 
-        ind_elem.reserve(major+1);
-        ind_pos.reserve(nonzero());
-        mat_c.reserve(nonzero());
+        major_vec.reserve(major+1);
+        minor_vec.reserve(nonzero());
+        compressed_mat.reserve(nonzero());
 
-        auto it1 = mmap.begin(); auto it0 = it1;
+        auto it1 = dyn_mat.begin(); auto it0 = it1;
 
         std::array<std::size_t,2> upperboundIndex = {0,0};
 
@@ -173,19 +173,19 @@ namespace algebra
         {
             it0 = it1; // update lower bound
             upperboundIndex[SO] = i+1;
-            it1 = mmap.lower_bound(upperboundIndex); // compute new upper bound
+            it1 = dyn_mat.lower_bound(upperboundIndex); // compute new upper bound
 
-            ind_elem.push_back(major_ind);
+            major_vec.push_back(major_ind);
             for (auto it=it0; it!=it1; ++it)
             {
-                ind_pos.push_back(it->first[minor_index]);
-                mat_c.push_back(it->second);
+                minor_vec.push_back(it->first[minor_index]);
+                compressed_mat.push_back(it->second);
                 major_ind++;
             }
         }
-        ind_elem.push_back(nonzero());
+        major_vec.push_back(nonzero());
 
-        mmap.clear();
+        dyn_mat.clear();
 
         isCompressed = true;
 
@@ -208,19 +208,19 @@ namespace algebra
 
         for(std::size_t i_major= 0; (i_major < major) && (i_elem<nonzero()); ++i_major)
         {
-            n_elem_loc = ind_elem[i_major+1] - ind_elem[i_major];
+            n_elem_loc = major_vec[i_major+1] - major_vec[i_major];
             current_index[SO] = i_major;
             for (std::size_t i = 0; i<n_elem_loc; ++i)
             {
-                current_index[minor_index] = ind_pos[i_elem];
-                mmap[current_index] = mat_c[i_elem];
+                current_index[minor_index] = minor_vec[i_elem];
+                dyn_mat[current_index] = compressed_mat[i_elem];
                 ++i_elem;
             }
         }
 
-        ind_pos.clear();
-        ind_elem.clear();
-        mat_c.clear();
+        minor_vec.clear();
+        major_vec.clear();
+        compressed_mat.clear();
 
         isCompressed = false;
 
@@ -250,9 +250,9 @@ namespace algebra
     {
         if (isCompressed)
         {
-            return mat_c.size();
+            return compressed_mat.size();
         }
-        return mmap.size();
+        return dyn_mat.size();
     }
     
     /// @brief call operator - getter
@@ -272,11 +272,11 @@ namespace algebra
         
         if(isCompressed)
         {
-            for (std::size_t i = ind_elem[idx[SO]]; i<ind_elem[idx[SO]+1] && idx[minor_index]>=ind_pos[i]; ++i)
+            for (std::size_t i = major_vec[idx[SO]]; i<major_vec[idx[SO]+1] && idx[minor_index]>=minor_vec[i]; ++i)
             {
-                if(ind_pos[i]==idx[minor_index])
+                if(minor_vec[i]==idx[minor_index])
                 {
-                    return mat_c[i];
+                    return compressed_mat[i];
                 }
             }
 
@@ -289,9 +289,9 @@ namespace algebra
         // get bounds
         index_type bound={0,0}; 
         bound[SO] = idx[SO];
-        auto it_l = mmap.lower_bound(bound);
+        auto it_l = dyn_mat.lower_bound(bound);
         bound[SO] = idx[SO]+1;
-        auto it_u = mmap.lower_bound(bound);
+        auto it_u = dyn_mat.lower_bound(bound);
 
         bool id_passed = false;
         for(auto it = it_l; it!=it_u && !id_passed; ++it)
@@ -333,12 +333,12 @@ namespace algebra
         if(isCompressed)
         {
             bool found = false;
-            for (std::size_t i = ind_elem[idx[SO]]; i<ind_elem[idx[SO]+1] && idx[minor_index]>=ind_pos[i]; ++i)
+            for (std::size_t i = major_vec[idx[SO]]; i<major_vec[idx[SO]+1] && idx[minor_index]>=minor_vec[i]; ++i)
             {
-                if (ind_pos[i]==idx[minor_index])
+                if (minor_vec[i]==idx[minor_index])
                 {
                     found = true;
-                    return mat_c[i];
+                    return compressed_mat[i];
                 }
             }
 
@@ -347,7 +347,7 @@ namespace algebra
             }
         }
 
-        return mmap[idx];
+        return dyn_mat[idx];
     }
 
     /// @brief call operator - setter
@@ -387,21 +387,21 @@ namespace algebra
         {
             std::cout << "elem       ";
             for (auto i = 0; i<nonzero(); ++i)
-                std::cout << mat_c[i] << " ";
+                std::cout << compressed_mat[i] << " ";
             std::cout << "\n";
 
             std::cout << "ind_minor  ";
             for (auto i = 0; i<nonzero(); ++i)
-                std::cout << ind_pos[i] << " ";
+                std::cout << minor_vec[i] << " ";
             std::cout << "\n";
 
             auto major = (SO==ROWS)?r:c;
             std::cout << "ind_major  ";
             for (auto i = 0; i<major+1; ++i)
-                std::cout << ind_elem[i] << " ";
+                std::cout << major_vec[i] << " ";
             std::cout << "\n";
         } else {
-            for (auto it = mmap.cbegin(); it!=mmap.cend(); ++it)
+            for (auto it = dyn_mat.cbegin(); it!=dyn_mat.cend(); ++it)
             {
                 std::cout << "[ " << it->first[0] << ", "<< it->first[1] << " ]  ->  " << it->second << "\n";
             }

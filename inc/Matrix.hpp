@@ -26,12 +26,12 @@ namespace algebra
         using map_type = std::map<std::array<std::size_t, 2>, T, compareIndex<SO>>;
 
     private:
-        map_type mmap; //dynamic matrix
+        map_type dyn_mat; //dynamic matrix
         std::size_t c; // number of columns
         std::size_t r; // number of rows
         bool isCompressed = false; // state: true if the matrix is compressed
-        std::vector<std::size_t> ind_elem, ind_pos; // vectorS storing indexes for compressed format
-        std::vector<T> mat_c; // compressed matrix
+        std::vector<std::size_t> major_vec, minor_vec; // vectors storing indexes for compressed format
+        std::vector<T> compressed_mat; // compressed matrix
         
         bool index_in_range(const index_type & idx) const; // check if indexes are in range
         std::size_t nonzero() const; // returns nonzero elements
@@ -43,7 +43,7 @@ namespace algebra
 
         /// @brief constructor: create matrix from existing map (without storing order)
         Matrix(const std::map<std::array<std::size_t, 2>, T> & map, std::size_t nr, std::size_t nc): 
-        mmap(map.begin(), map.end()), r(nr), c(nc), isCompressed(false) {};
+        dyn_mat(map.begin(), map.end()), r(nr), c(nc), isCompressed(false) {};
 
         /// @brief constructor: read from matrix market format file
         /// @param filename 
@@ -56,13 +56,12 @@ namespace algebra
         // move constructor
         Matrix(Matrix &&) = default;
         
-        // @brief get first element as constant iterator of the dynamic matrix
         map_type::const_iterator cbegin() const;
         map_type::const_iterator cend() const;
 
-        std::vector<T> get_compressed_matrix() const {return mat_c;};
-        std::vector<std::size_t> get_minor_index_vector() const {return ind_pos;};
-        std::vector<std::size_t> get_major_index_vector() const {return ind_elem;};
+        std::vector<T> get_compressed_matrix() const {return compressed_mat;};
+        std::vector<std::size_t> get_minor_vector() const {return minor_vec;};
+        std::vector<std::size_t> get_major_vector() const {return major_vec;};
 
         void read_matrix_mmf(const std::string & filename);
 

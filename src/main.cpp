@@ -21,11 +21,11 @@ int main() {
     Matrix<type, ROWS> M_rows(filename);
     Matrix<type, COLS> M_cols(M_rows);
 
-    TestPerformance<type, ROWS> test_perf_csr(filename);
-    TestPerformance<type, COLS> test_perf_csc(filename);
+    TestPerformance<type, ROWS> benchmark_csr(filename);
+    TestPerformance<type, COLS> benchmark_csc(filename);
     
-    test_perf_csc.test_all();
-    test_perf_csr.test_all();
+    benchmark_csc.test_all();
+    benchmark_csr.test_all();
 
     return 0;
 }
