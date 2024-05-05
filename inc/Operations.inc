@@ -6,8 +6,13 @@
 
 namespace algebra {
 
-    template<typename T, STORAGE_ORDER SO>
-    const Matrix<T, SO> operator*(const Matrix<T, SO> & mat, const std::vector<T> & v)
+    /// @brief multiplication operator (ROWS specialization)
+    /// @tparam T value type
+    /// @param mat 
+    /// @param v 
+    /// @return 
+    template<typename T>
+    const Matrix<T, ROWS> operator*(const Matrix<T, ROWS> & mat, const std::vector<T> & v)
     {
         if (mat.c!=v.size()){
             throw std::logic_error("sizes do not match!");
@@ -51,6 +56,11 @@ namespace algebra {
         
     };    
     
+    /// @brief multiplication operator specialization with storing order COLS
+    /// @tparam T value type
+    /// @param mat 
+    /// @param v 
+    /// @return res = mat*v
     template<typename T>
     const Matrix<T,COLS> operator*(const Matrix<T, COLS> & mat, const std::vector<T> & v)
     {

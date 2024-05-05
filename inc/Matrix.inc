@@ -9,7 +9,7 @@ namespace algebra
 {
 
     /// @brief compares indexes according to storage order
-    /// @tparam so 
+    /// @tparam so storage order 
     /// @param lhs 
     /// @param rhs 
     /// @return 
@@ -25,6 +25,11 @@ namespace algebra
 
     ///// class Matrix definitions
 
+    
+    /// @brief copy constructor: copies the data from a matrix with the other storing order
+    /// @tparam T value type
+    /// @tparam SO storage order 
+    /// @param mat matrix with the other storing order
     template<typename T, STORAGE_ORDER SO>
     Matrix<T,SO>::Matrix(const Matrix<T,Matrix<T,SO>::minor_index> &mat): 
     Matrix(mat.get_rows(), mat.get_cols())
@@ -55,8 +60,8 @@ namespace algebra
     };
 
     /// @brief resize the dimensions of a matrix
-    /// @tparam T 
-    /// @tparam SO 
+    /// @tparam T value type
+    /// @tparam SO storage order 
     /// @param idx 
     template<typename T, STORAGE_ORDER SO>
     void Matrix<T, SO>::resize(const index_type & idx){
@@ -68,8 +73,8 @@ namespace algebra
     };
 
     /// @brief resize the dimensions of a matrix
-    /// @tparam T 
-    /// @tparam SO 
+    /// @tparam T value type
+    /// @tparam SO storage order 
     /// @param i_r 
     /// @param i_c 
     template<typename T, STORAGE_ORDER SO>
@@ -81,7 +86,10 @@ namespace algebra
         return;
     };
 
-    
+    /// @brief get the first element as constant iterator of the dynamic matrix
+    /// @tparam T value type
+    /// @tparam SO storage order 
+    /// @return mmap.cbegin()
     template<typename T, STORAGE_ORDER SO>
     Matrix<T,SO>::map_type::const_iterator Matrix<T, SO>::cbegin() const
     {
@@ -92,6 +100,10 @@ namespace algebra
         return mmap.cbegin();
     }
 
+    /// @brief get the end as constant iterator of the dynamic matrix
+    /// @tparam T value type
+    /// @tparam SO storage order 
+    /// @return mmap.cend()
     template<typename T, STORAGE_ORDER SO>
     Matrix<T,SO>::map_type::const_iterator Matrix<T, SO>::cend() const
     {
@@ -103,8 +115,8 @@ namespace algebra
     }
 
     /// @brief read sparse matrix in matrix market format from a file
-    /// @tparam T 
-    /// @tparam SO 
+    /// @tparam T value type
+    /// @tparam SO storage order 
     /// @param filename 
     template<typename T, STORAGE_ORDER SO>
     void Matrix<T,SO>::read_matrix_mmf(const std::string & filename){
@@ -134,8 +146,8 @@ namespace algebra
     }
 
     /// @brief compress sparse matrix
-    /// @tparam T 
-    /// @tparam SO 
+    /// @tparam T value type
+    /// @tparam SO storage order 
     template<typename T, STORAGE_ORDER SO>
     void Matrix<T, SO>::compress()
     {
@@ -182,8 +194,8 @@ namespace algebra
     };
 
     /// @brief uncompress sparse matrix
-    /// @tparam T 
-    /// @tparam SO 
+    /// @tparam T value type
+    /// @tparam SO storage order 
     template<typename T, STORAGE_ORDER SO>
     void Matrix<T, SO>::uncompress()
     {
@@ -216,8 +228,8 @@ namespace algebra
     };
 
     /// @brief check if indeces are in range
-    /// @tparam T 
-    /// @tparam SO 
+    /// @tparam T value type
+    /// @tparam SO storage order 
     /// @param idx 
     /// @return true if the indeces are valid, false oterwise
     template<typename T, STORAGE_ORDER SO>
@@ -230,8 +242,8 @@ namespace algebra
     }
 
     /// @brief 
-    /// @tparam T 
-    /// @tparam SO 
+    /// @tparam T value type
+    /// @tparam SO storage order 
     /// @return number of nonzero elements
     template<typename T, STORAGE_ORDER SO>
     std::size_t Matrix<T,SO>::nonzero() const 
@@ -244,8 +256,8 @@ namespace algebra
     }
     
     /// @brief call operator - getter
-    /// @tparam T 
-    /// @tparam SO 
+    /// @tparam T value type
+    /// @tparam SO storage order 
     /// @param idx indices
     /// @return element of the sparse matrix
     template<typename T, STORAGE_ORDER SO>
@@ -295,8 +307,8 @@ namespace algebra
     }
 
     /// @brief call operator - getter
-    /// @tparam T 
-    /// @tparam SO 
+    /// @tparam T value type
+    /// @tparam SO storage order 
     /// @param ir row index
     /// @param ic column index
     /// @return element of the sparse matrix
@@ -306,8 +318,8 @@ namespace algebra
     }
 
     /// @brief call operator - setter
-    /// @tparam T 
-    /// @tparam SO 
+    /// @tparam T value type
+    /// @tparam SO storage order 
     /// @param idx indices
     /// @return 
     template<typename T, STORAGE_ORDER SO>
@@ -339,8 +351,8 @@ namespace algebra
     }
 
     /// @brief call operator - setter
-    /// @tparam T 
-    /// @tparam SO 
+    /// @tparam T value type
+    /// @tparam SO storage order 
     /// @param ir row index
     /// @param ic column index
     /// @return 
@@ -351,8 +363,8 @@ namespace algebra
     }
 
     /// @brief print
-    /// @tparam T 
-    /// @tparam SO 
+    /// @tparam T value type
+    /// @tparam SO storage order 
     template<typename T, STORAGE_ORDER SO>
     void Matrix<T, SO>::print() const {
         std::cout << "\n\nnumber of rows:    " << r << "\n";
@@ -365,8 +377,8 @@ namespace algebra
     };
 
     /// @brief print all elements
-    /// @tparam T 
-    /// @tparam SO 
+    /// @tparam T value type
+    /// @tparam SO storage order 
     template<typename T, STORAGE_ORDER SO>
     void Matrix<T, SO>::verbose_print() const {
 

@@ -24,8 +24,8 @@ int main() {
     TestPerformance<type, ROWS> test_perf_csr(filename);
     TestPerformance<type, COLS> test_perf_csc(filename);
     
-    test_perf_csr.test_all();
     test_perf_csc.test_all();
+    test_perf_csr.test_all();
 
     return 0;
 }

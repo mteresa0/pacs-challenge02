@@ -9,8 +9,8 @@ namespace algebra{
     template<typename T, STORAGE_ORDER so>
     class TestPerformance {
     private:
-        Matrix<T, so> matrix;
-        Timings::Chrono clock;
+        Matrix<T, so> matrix; // sparse matrix
+        Timings::Chrono clock; // clock
         
         static constexpr auto major = (so==ROWS)? "CSR" : "CSC";
         
@@ -27,9 +27,13 @@ namespace algebra{
     }; // end class TestPerformance
 
     
+    /// @brief prints computational time used for compressing a sparse matrix
+    /// @tparam T value type
+    /// @tparam so storage order 
     template<typename T, STORAGE_ORDER so>
     void TestPerformance<T, so>::test_compress()
     {
+        // here i don't care if it is computational costly, it is the only way to get the computational time for compressing a matrix
         if(matrix.is_compressed())
             matrix.uncompress();
 
@@ -43,10 +47,15 @@ namespace algebra{
 
         return;
     };
-
+    
+    /// @brief prints computational time used for uncompressing a sparse matrix
+    /// @tparam T value type
+    /// @tparam so storage order
     template<typename T, STORAGE_ORDER so>
     void TestPerformance<T, so>::test_uncompress()
     {
+        
+        // here i don't care if it is computational costly, it is the only way to get the computational time for uncompressing a matrix
         if(!matrix.is_compressed())
             matrix.compress();
 
@@ -61,6 +70,9 @@ namespace algebra{
         return;
     };
 
+    /// @brief prints computational time for sparse matrix vecotr multiplications in both compressed and uncompressed case 
+    /// @tparam T value type
+    /// @tparam so storage order
     template<typename T, STORAGE_ORDER so>
     void TestPerformance<T, so>::test_SMV_multiplication()
     {
@@ -94,6 +106,9 @@ namespace algebra{
         return;
     };
 
+    /// @brief prints computational time for compressing, uncompressing and SMV multiplication
+    /// @tparam T value type
+    /// @tparam so storage order
     template<typename T, STORAGE_ORDER so>
     void TestPerformance<T, so>::test_all()
     {

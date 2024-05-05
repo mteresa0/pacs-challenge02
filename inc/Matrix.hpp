@@ -34,22 +34,29 @@ namespace algebra
         std::vector<T> mat_c; // compressed matrix
         
         bool index_in_range(const index_type & idx) const; // check if indexes are in range
-        std::size_t nonzero() const;
+        std::size_t nonzero() const; // returns nonzero elements
 
-        static constexpr STORAGE_ORDER minor_index = (SO==ROWS) ? COLS : ROWS;
+        static constexpr STORAGE_ORDER minor_index = (SO==ROWS) ? COLS : ROWS; // stores the other storing order
 
     public:
         explicit Matrix(std::size_t nr=0, std::size_t nc=0): r(nr), c(nc), isCompressed(false) {};
 
+        /// @brief constructor: create matrix from existing map (without storing order)
         Matrix(const std::map<std::array<std::size_t, 2>, T> & map, std::size_t nr, std::size_t nc): 
         mmap(map.begin(), map.end()), r(nr), c(nc), isCompressed(false) {};
 
+        /// @brief constructor: read from matrix market format file
+        /// @param filename 
         Matrix(const std::string & filename): Matrix() {read_matrix_mmf(filename);};
 
+        // copy constructor
         Matrix(const Matrix &) = default;
+        // constructor from other storage order 
         Matrix(const Matrix<T,minor_index> &);
+        // move constructor
         Matrix(Matrix &&) = default;
         
+        // @brief get first element as constant iterator of the dynamic matrix
         map_type::const_iterator cbegin() const;
         map_type::const_iterator cend() const;
 
@@ -62,6 +69,7 @@ namespace algebra
         void resize(const index_type &);
         void resize(const std::size_t & i_r, const std::size_t & i_c);
 
+        /// @brief returns the state of the sparse matrix (compressed/uncompressed)
         bool is_compressed() const {return isCompressed;};
         
         void compress();
@@ -76,17 +84,23 @@ namespace algebra
         void print() const;
         void verbose_print() const;
 
+        /// @brief get number of rows 
         std::size_t get_rows() const {return r;};
+        /// @brief get number of columns 
         std::size_t get_cols() const {return c;};
 
-        template <typename U, STORAGE_ORDER so>
-        friend const Matrix<U,so> operator*(const Matrix<U,so> &mat, const std::vector<U> & v);
+        template <typename U>
+        friend const Matrix<U,ROWS> operator*(const Matrix<U,ROWS> &mat, const std::vector<U> & v);
 
         template <typename U>
         friend const Matrix<U,COLS> operator*(const Matrix<U,COLS> &mat, const std::vector<U> & v);
 
     }; // end Matrix class
 
+    /// @brief 
+    /// @tparam T value type
+    /// @param value 
+    /// @return 
     template<typename T>
     inline const bool is_zero(const T & value) {return value == T();};
 
