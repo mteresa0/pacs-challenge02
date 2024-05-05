@@ -13,12 +13,12 @@ First, you have to set `PACS_ROOT` as your path to the [pacs-examples]() repo. Y
 PACS_ROOT=/home/myname/pacs/Examples/
 ```
 
-## Usage
 Alternatively, you may set an environmental variable with the same name using the command 
 ```
 export PACS_ROOT=/home/myname/pacs/Examples/ 
 ```
 
+## Usage
 In the terminal run:
 - `make all` to compile and run the program;
 - `make main` to compile;
