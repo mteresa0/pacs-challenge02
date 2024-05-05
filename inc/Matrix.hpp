@@ -88,16 +88,10 @@ namespace algebra
     }; // end Matrix class
 
     template<typename T>
-    inline const bool is_zero(const T & value) {return value == 0;};
-
-    template<typename U>
-    inline const bool is_zero(const std::complex<U> & value) {return value == std::complex<U>(0,0);};
+    inline const bool is_zero(const T & value) {return value == T();};
 
     template<typename T>
-    inline void put_zero(T & value) {value = 0; return;};
-
-    template<typename U>
-    inline void put_zero(std::complex<U> & value) {value = std::complex<U>(0,0); return;};
+    inline void put_zero(T & value) {value = T(); return;};
     
 } // end namespace algebra
 
